@@ -6,3 +6,4 @@ db:
     username: "postgres"
     dbname: "postgres"
     sslmode: "disable"
+    max_rows_query_limit: 1000
