@@ -1,0 +1,7 @@
+CREATE TABLE transactions (
+    id BIGSERIAL PRIMARY KEY,
+    from_wallet_id BIGINT NOT NULL REFERENCES wallets(id) ON DELETE CASCADE,
+    to_wallet_id BIGINT NOT NULL REFERENCES wallets(id) ON DELETE CASCADE,
+    amount NUMERIC(20,2) NOT NULL CHECK (amount > 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
