@@ -4,7 +4,12 @@ package database
 import (
 	"fmt"
 	"os"
+	"wallet_api/internal/errors"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 )
 
@@ -29,3 +34,43 @@ func GetPostgresDSN() string {
 	)
 }
 
+// RunMigrations выполняет миграции.
+func RunMigrations(db *sqlx.DB) error {
+	driver, err := postgres.WithInstance(db.DB, &postgres.Config{})
+	if err != nil {
+		return errors.ErrDatabaseDriver
+	}
+	migrator, err := migrate.NewWithDatabaseInstance(
+		"file://migrations",
+		"postgres",
+		driver,
+	)
+	if err != nil {
+		return errors.ErrMigrations
+	}
+
+	if err := migrator.Up(); err != nil && err != migrate.ErrNoChange {
+		return errors.ErrMigrations
+	}
+
+	return nil
+}
+
+// DBSeedWallets выполняет стартовое наполнение БД кошельками
+func DBSeedWallets(db *sqlx.DB) error {
+	var count int
+	err := db.Get(&count, "SELECT COUNT(*) FROM wallets")
+	if err != nil {
+		return err
+	}
+	if count != 0 {
+		return nil
+	}
+
+	sql, err := os.ReadFile("db_seeds/wallets_seeder.sql")
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(string(sql))
+	return err
+}
