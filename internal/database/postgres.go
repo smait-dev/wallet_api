@@ -4,14 +4,23 @@ package database
 import (
 	"fmt"
 	"os"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
+)
+
+const (
+	driverName     = "postgres"
+	migrationsPath = "file://migrations"
 )
 
 // ConnectPostgres устанавливает соединение с базой данных PostgreSQL.
 // Возвращает подключение к БД и ошибку.
 func ConnectPostgres() (*sqlx.DB, error) {
-	return sqlx.Connect("postgres", GetPostgresDSN())
+	return sqlx.Connect(driverName, GetPostgresDSN())
 }
 
 // GetPostgresDSN формирует строковую ссылку для подключения.
@@ -29,3 +38,43 @@ func GetPostgresDSN() string {
 	)
 }
 
+// RunMigrations выполняет миграции.
+func RunMigrations(db *sqlx.DB) error {
+	driver, err := postgres.WithInstance(db.DB, &postgres.Config{})
+	if err != nil {
+		return err
+	}
+	migrator, err := migrate.NewWithDatabaseInstance(
+		migrationsPath,
+		"postgres",
+		driver,
+	)
+	if err != nil {
+		return err
+	}
+
+	if err := migrator.Up(); err != nil && err != migrate.ErrNoChange {
+		return err
+	}
+
+	return nil
+}
+
+// DBSeedWallets выполняет стартовое наполнение БД кошельками
+func DBSeedWallets(db *sqlx.DB) error {
+	var count int
+	err := db.Get(&count, "SELECT COUNT(*) FROM wallets")
+	if err != nil {
+		return err
+	}
+	if count != 0 {
+		return nil
+	}
+
+	sql, err := os.ReadFile("db_seeds/wallets_seeder.sql")
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(string(sql))
+	return err
+}
