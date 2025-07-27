@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wallet_api
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    restart: on-failure:5
+    environment:
+      DB_PASSWORD: 9898
+
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 9898
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: on-failure:1
+
+volumes:
+  pgdata:
