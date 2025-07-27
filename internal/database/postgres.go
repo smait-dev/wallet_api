@@ -12,15 +12,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	driverName     = "postgres"
-	migrationsPath = "file://migrations"
-)
-
 // ConnectPostgres устанавливает соединение с базой данных PostgreSQL.
 // Возвращает подключение к БД и ошибку.
 func ConnectPostgres() (*sqlx.DB, error) {
-	return sqlx.Connect(driverName, GetPostgresDSN())
+	return sqlx.Connect("postgres", GetPostgresDSN())
 }
 
 // GetPostgresDSN формирует строковую ссылку для подключения.
@@ -45,7 +40,7 @@ func RunMigrations(db *sqlx.DB) error {
 		return err
 	}
 	migrator, err := migrate.NewWithDatabaseInstance(
-		migrationsPath,
+		"file://migrations",
 		"postgres",
 		driver,
 	)
