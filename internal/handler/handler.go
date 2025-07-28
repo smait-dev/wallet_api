@@ -2,6 +2,7 @@
 package handler
 
 import (
+	"wallet_api/internal/config"
 	"wallet_api/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -9,11 +10,12 @@ import (
 // Handler представляет обработчик HTTP запросов с доступом к слою бизнес-логики.
 type Handler struct {
 	Service *service.Service
+	Config  *config.Config
 }
 
 // NewHandler возвращает экземпляр обработчика.
-func NewHandler(service *service.Service) *Handler {
-	return &Handler{Service: service}
+func NewHandler(service *service.Service, cfg *config.Config) *Handler {
+	return &Handler{Service: service, Config: cfg}
 }
 
 // InitRoutes инициализирует маршруты API и возвращает обьект роутера.
@@ -28,4 +30,8 @@ func (handler *Handler) InitRoutes() *gin.Engine {
 	}
 
 	return router
+}
+
+func (handler *Handler) GetConfig() *config.Config {
+	return handler.Config
 }
