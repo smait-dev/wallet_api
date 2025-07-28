@@ -12,7 +12,7 @@ func ErrorResponse(c *gin.Context, err error) {
 	})
 }
 
-// Error формирование общего ответа сервера.
+// Response формирование общего ответа сервера.
 func Response(c *gin.Context, code int, data any) {
 	c.JSON(code, data)
 }
