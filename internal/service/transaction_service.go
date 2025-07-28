@@ -3,6 +3,8 @@ package service
 import (
 	"errors"
 	"wallet_api/internal/entity"
+	"wallet_api/internal/errors"
+	"wallet_api/internal/repository"
 )
 
 // ITransactionService определяет интерфейс бизнес-логики для работы с транзакциями.
@@ -27,7 +29,11 @@ func NewTransactionService(repository repository.ITransactionRepository) *Transa
 
 func (ts *TransactionService) Send(from string, to string, amount float64) error {
 	if amount <= 0 {
-		return errors.New("tmp error")
+		return errors.ErrInvalidAmount
+	}
+
+	if err := ts.walletService.ValidateAddresses(from, to); err != nil {
+		return err
 	}
 	return ts.transactionRepository.Send(from, to, amount)
 }
@@ -38,7 +44,7 @@ func (ts *TransactionService) GetLastTransactions(count int) ([]entity.Transacti
 	// }
 	transactions, err := ts.transactionRepository.GetLastTransactions(count)
 	if err != nil {
-		return nil, errors.New("tmp error")
+		return nil, errors.ErrDatabase
 	}
 	return transactions, err
 }

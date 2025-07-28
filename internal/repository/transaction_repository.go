@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"errors"
 	"wallet_api/internal/entity"
+	"wallet_api/internal/errors"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -28,7 +28,7 @@ func NewTransactionRepository(db *sqlx.DB) *TransactionRepository {
 func (tr *TransactionRepository) Send(fromAddr, toAddr string, amount float64) (err error) {
 	tx, err := tr.db.Beginx()
 	if err != nil {
-		return errors.New("tmp error")
+		return errors.ErrDatabase
 	}
 	defer func() {
 		if err != nil {
@@ -53,11 +53,11 @@ func (tr *TransactionRepository) Send(fromAddr, toAddr string, amount float64) (
 		)
 	`, fromAddr, toAddr, amount)
 	if err != nil {
-		return errors.New("tmp error")
+		return errors.ErrTransactionFailed
 	}
 
 	if err = tx.Commit(); err != nil {
-		return errors.New("tmp error")
+		return errors.ErrTransactionFailed
 	}
 
 	return nil
@@ -70,11 +70,11 @@ func (tr *TransactionRepository) debit(tx *sqlx.Tx, address string, amount float
 		WHERE address = $2 AND balance >= $1
 	`, amount, address)
 	if err != nil {
-		return errors.New("tmp error")
+		return errors.ErrDebitFailed
 	}
 	rows, _ := res.RowsAffected()
 	if rows == 0 {
-		return errors.New("tmp error")
+		return errors.ErrInsufficientFunds
 	}
 	return nil
 }
@@ -86,7 +86,7 @@ func (tr *TransactionRepository) credit(tx *sqlx.Tx, address string, amount floa
 		WHERE address = $2
 	`, amount, address)
 	if err != nil {
-		return errors.New("tmp error")
+		return errors.ErrCreditFailed
 	}
 	return nil
 }
