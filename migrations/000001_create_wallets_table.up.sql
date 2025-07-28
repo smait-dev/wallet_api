@@ -1,0 +1,6 @@
+CREATE TABLE wallets (
+    id BIGSERIAL PRIMARY KEY,
+    address VARCHAR(64) UNIQUE NOT NULL,
+    balance NUMERIC(20,2) NOT NULL CHECK (balance >= 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
