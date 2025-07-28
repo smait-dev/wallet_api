@@ -1,10 +1,9 @@
 package repository
 
 import (
+	"github.com/jmoiron/sqlx"
 	"wallet_api/internal/entity"
 	"wallet_api/internal/errors"
-
-	"github.com/jmoiron/sqlx"
 )
 
 // ITransactionRepository интерфейс для работы с транзакциями.

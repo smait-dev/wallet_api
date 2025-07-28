@@ -2,8 +2,8 @@
 package repository
 
 import (
-	"wallet_api/internal/config"
 	"github.com/jmoiron/sqlx"
+	"wallet_api/internal/config"
 )
 
 // Repository предоставляет доступ к репозиториям транзакций и кошельков.

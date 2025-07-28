@@ -1,9 +1,9 @@
 package handler
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"wallet_api/internal/server"
-	"github.com/gin-gonic/gin"
 )
 
 // GetBalance возвращает баланс кошелька по указанному адресу.

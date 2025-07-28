@@ -2,9 +2,9 @@
 package handler
 
 import (
+	"github.com/gin-gonic/gin"
 	"wallet_api/internal/config"
 	"wallet_api/internal/service"
-	"github.com/gin-gonic/gin"
 )
 
 // Handler представляет обработчик HTTP запросов с доступом к слою бизнес-логики.

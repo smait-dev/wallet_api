@@ -1,8 +1,8 @@
 package server
 
 import (
-	"wallet_api/internal/errors"
 	"github.com/gin-gonic/gin"
+	"wallet_api/internal/errors"
 )
 
 // ErrorResponse формирование ответа сервера при возникновении ошибки.

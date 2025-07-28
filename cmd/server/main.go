@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/signal"
@@ -14,7 +15,6 @@ import (
 	"wallet_api/internal/repository"
 	"wallet_api/internal/server"
 	"wallet_api/internal/service"
-	"github.com/spf13/viper"
 )
 
 func main() {

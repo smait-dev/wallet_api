@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"wallet_api/internal/entity"
 	"wallet_api/internal/errors"
 	"wallet_api/internal/server"
-	"github.com/gin-gonic/gin"
 )
 
 // Send обрабатывает отправку средств между кошельками.

@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"wallet_api/internal/errors"
-
 	"github.com/jmoiron/sqlx"
+	"wallet_api/internal/errors"
 )
 
 // IWalletRepository определяет интерфейс для работы с кошельками.
